@@ -96,20 +96,27 @@ module plate(){
 
 module top(){
   difference(){
-    cube([moduleX+edgeSpace, moduleY+edgeSpace, topZ]);
-    translate([edgeSpace/2,edgeSpace/2,-1])cube([moduleX, moduleY, topZ+2]);
+    union(){
+      difference(){
+        cube([moduleX+edgeSpace, moduleY+edgeSpace, topZ]);
+        translate([edgeSpace/2,edgeSpace/2,-1])cube([moduleX, moduleY, topZ+2]);
+        
+      }
+      translate([0,0,-keyZ]){
+        repeate(3.1, 3.1, 6.1, 6.1)cube([space,space,topZ]);
+        repeate(4.1, 4.1, 6.1, 6.1)cube([space,space,topZ]);
+        repeate(3.1, 3.1, 6.9, 6.9)cube([space,space,topZ]);
+        repeate(4.1, 4.1, 6.9, 6.9)cube([space,space,topZ]);
+        
+        repeate(9.9, 9.9, 6.1, 6.1)cube([space,space,topZ]);
+        repeate(10.9, 10.9, 6.1, 6.1)cube([space,space,topZ]);
+        repeate(9.9, 9.9, 6.9, 6.9)cube([space,space,topZ]);
+        repeate(10.9, 10.9, 6.9, 6.9)cube([space,space,topZ]);
+      }
+    }
+    translate([edgeSpace/2,edgeSpace/2,-1])cube([moduleX, moduleY, moduleZ*3.7]);
   }
-  translate([0,0,-keyZ]){
-    repeate(3.1, 3.1, 6.1, 6.1)cube([space,space,topZ]);
-    repeate(4.1, 4.1, 6.1, 6.1)cube([space,space,topZ]);
-    repeate(3.1, 3.1, 6.9, 6.9)cube([space,space,topZ]);
-    repeate(4.1, 4.1, 6.9, 6.9)cube([space,space,topZ]);
-    
-    repeate(9.9, 9.9, 6.1, 6.1)cube([space,space,topZ]);
-    repeate(10.9, 10.9, 6.1, 6.1)cube([space,space,topZ]);
-    repeate(9.9, 9.9, 6.9, 6.9)cube([space,space,topZ]);
-    repeate(10.9, 10.9, 6.9, 6.9)cube([space,space,topZ]);
-  }
+  
   
   
 }
