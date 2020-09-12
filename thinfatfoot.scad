@@ -23,6 +23,7 @@ caps=true;
 showTop=true;
 showPlate=true;
 showBottom=true;
+partSpaceing=0;
 
 $fn=30;
 $fs=0.15;
@@ -254,11 +255,11 @@ module keyboard(){
         plate();
       }
       if(showTop){
-        translate([-edgeSpace/2,-edgeSpace/2,-(topZ/3)])color([0.5,0.6,0.7])top();
+        translate([0,0,partSpaceing])translate([-edgeSpace/2,-edgeSpace/2,-(topZ/3)])color([0.5,0.6,0.7])top();
       }
     }
     if(showBottom){
-      color([1,0,1])translate([0,0,-23])bottom();
+      translate([0,0,-partSpaceing])color([1,0,1])translate([0,0,-23])bottom();
     }
   }
 }
