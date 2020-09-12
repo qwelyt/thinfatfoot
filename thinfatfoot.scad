@@ -20,6 +20,9 @@ topZ=20;
 
 keys=true;
 caps=true;
+showTop=true;
+showPlate=true;
+showBottom=true;
 
 $fn=30;
 $fs=0.15;
@@ -31,6 +34,7 @@ keyY = cherrySize;
 keyZ = moduleZ;
 
 keySize = [keyX, keyY, moduleZ+2];
+tilt=7;
 
 
 /*[ Printer settings ]*/
@@ -117,10 +121,18 @@ module keyHoles (yStart, yEnd, xStart, xEnd){
    repeate(yStart,yEnd, xStart, xEnd) mxSwitchCut();
 }
 
+module screwPoints(antiTilt=false){
+  rotation = antiTilt ? [0,-tilt,0] : [0,0,0];
+  translate([6,6,0])rotate(rotation)children();
+  translate([6,moduleY-6,0])rotate(rotation)children();
+  translate([moduleX-6,6,0])rotate(rotation)children();
+  translate([moduleX-6,moduleY-6,0])rotate(rotation)children();
+}
+
 
 module plate(){
   difference(){
-    cube([moduleX, moduleY, moduleZ]);
+    color([0.4,0.7,0.9])cube([moduleX, moduleY, moduleZ]);
     keyHoles(1.5,11.5,1.5,4.5);
     
     keyHoles(1.5,1.5,5.5,5.5);
@@ -129,6 +141,10 @@ module plate(){
     keyHoles(8,8,5.5,5.5);
     
     keyHoles(11.5,11.5,5.5,5.5);
+    
+    
+    screwPoints(true)cylinder(d=mSize,h=moduleZ+2);
+    
   }
   
   if(keys){
@@ -204,33 +220,46 @@ module top(){
         translate([moduleX+edgeSpace*0.7,0,0])roundier();
         translate([edgeSpace*0.55,0,20])rotate([0,180,0])roundier();
       }
-      
-      
-//      translate([1,0,10])rotate([-90,0,0])cylinder(h=moduleY+edgeSpace, d=20);
-//      translate([moduleX+edgeSpace-1,0,10])rotate([-90,0,0])cylinder(h=moduleY+edgeSpace, d=20);
     }
   
-    translate([0,7,30])rotate([180,0,0])rounder();  
-    translate([0,moduleY+edgeSpace*2-10,13])rotate([90,0,0])rounder();
+    translate([0,7.45,29])rotate([180,0,0])rounder();  
+    translate([0,moduleY+edgeSpace*2-10,12.55])rotate([90,0,0])rounder();
+    
+    translate([edgeSpace/2, edgeSpace/2,9])screwPoints(true)cylinder(d=mSize,h=moduleZ*3);
   }
 }
 
 module bottom(){
+  module screwHole(){
+    union(){
+     translate([0,0,-1])cylinder(d=mNutDHole(mSize+1),h=6,$fn=6);
+     translate([0,0,4])cylinder(d=mSize,h=20);
+    }
+  }
+  
   difference(){
-    cube([moduleX,moduleY, moduleZ*6]);
-    translate([-10,-10,moduleZ*6.3])rotate([0,7,0])cube([moduleX*1.3,moduleY*1.3, moduleZ*7]);
+    cube([moduleX,moduleY, moduleZ*10]);
+    translate([-10,-10,moduleZ*8])rotate([0,tilt,0])cube([moduleX*1.3,moduleY*1.3, moduleZ*11]);
+    translate([edgeSpace/2,edgeSpace/2,5])cube([moduleX-edgeSpace,moduleY-edgeSpace, moduleZ*6]);
+    
+    screwPoints()screwHole();
   }
 }
 
 module keyboard(){
   translate([10,10,0]){
 //    rotate([0,0,0]){
-    rotate([0,7,0]){
-      plate();
-      translate([-edgeSpace/2,-edgeSpace/2,-(topZ/3)])top();
+    rotate([0,tilt,0]){
+      if(showPlate){
+        plate();
+      }
+      if(showTop){
+        translate([-edgeSpace/2,-edgeSpace/2,-(topZ/3)])color([0.5,0.6,0.7])top();
+      }
     }
-
-    color([1,0,1])translate([0,0,-23])bottom();
+    if(showBottom){
+      color([1,0,1])translate([0,0,-23])bottom();
+    }
   }
 }
 
