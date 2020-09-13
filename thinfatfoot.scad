@@ -25,7 +25,7 @@ showPlate=true;
 showBottom=true;
 partSpaceing=0;
 
-proMicroPosition=position(4.5,7,3.5);
+proMicroPosition=position(5,7,3.5);
 
 $fn=50;
 $fs=0.15;
@@ -283,23 +283,29 @@ module bottom(){
 //    translate([30,30,0])cube([10,10,10]);
     translate(proMicroPosition){
       proMicro(true);
-      translate([-25,0,0])cube([17,10,10],center=true);
-      translate([-45,0,-2])cordParth();
-      translate([-45,0,-2])rotate([0,0,90])cordParth(moduleY*0.805);
-      translate([-70,90,-2])cordParth();
-      translate([-70,-90,-2])cordParth();
+      translate([-30,0,0])cube([25,12,10],center=true);
+      translate([-55,0,-2])cordParth();
+      translate([-55,0,-2])rotate([0,0,90])cordParth(moduleY*0.805);
+      translate([-80,90,-2])cordParth();
+      translate([-80,-90,-2])cordParth();
     }
   }
   translate(proMicroPosition){
-    translate([-55,2,-3])cube([6,2,1],center=true);
-    translate([-55,92,-3])cube([6,2,1],center=true);
-    translate([-55,-92,-3])cube([6,2,1],center=true);
+    translate([-33,0,6])cube([24,12,2],center=true);
+    translate([-33.25,-7.5,3])cube([24.5,3,8],center=true);
+    translate([-33.25,7.5,3])cube([24.5,3,8],center=true);
+    translate([-44,0,4])cube([3,12,6],center=true);
+  }
+  translate(proMicroPosition){
+    translate([-65,2,-3])cube([6,2,1],center=true);
+    translate([-65,92,-3])cube([6,2,1],center=true);
+    translate([-65,-92,-3])cube([6,2,1],center=true);
     
-    translate([-43,70,-3])cube([2,6,1],center=true);
-    translate([-43,30,-3])cube([2,6,1],center=true);
+    translate([-53,70,-3])cube([2,6,1],center=true);
+    translate([-53,30,-3])cube([2,6,1],center=true);
     
-    translate([-43,-70,-3])cube([2,6,1],center=true);
-    translate([-43,-30,-3])cube([2,6,1],center=true);
+    translate([-53,-70,-3])cube([2,6,1],center=true);
+    translate([-53,-30,-3])cube([2,6,1],center=true);
   }
   color([1,1,0])translate(proMicroPosition)proMicro();
 }
