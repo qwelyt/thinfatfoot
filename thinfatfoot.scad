@@ -25,7 +25,9 @@ showPlate=true;
 showBottom=true;
 partSpaceing=0;
 
-$fn=30;
+proMicroPosition=position(4.5,7,3.5);
+
+$fn=50;
 $fs=0.15;
 
 mSize=3;
@@ -84,6 +86,30 @@ module cherryCap(x=cherryCutOutSize/1.36,y=cherryCutOutSize/1.36,z=4, capSize=1,
     rotate([0,0,capRotation])
 			import("keycap-dsa-2.0-row3-cherry.stl");
 	}
+}
+
+module saCap(x=cherryCutOutSize/1.36,y=cherryCutOutSize/1.36,z=4,row=1){
+  color([0.3,1,0.7])
+  translate([x-0.819,y-0.8,z+3.5])
+  rotate([0,0,90])
+  import(str("SA_1u_r", row , ".stl"));
+  
+}
+
+
+module proMicro(cutout=false){
+  rotate([0,0,90])
+  if(cutout){
+    union(){
+      translate([0,0,0.9])cube([19,33.7,4], center=true);
+      translate([-7.3,0,-1.2])cube([4.5,33.7,2], center=true);
+      translate([7.3,0,-1.2])cube([4.5,33.7,2], center=true);
+      translate([0,17,2])cube([8,3,3], center=true);
+//      translate([0,-20,-0.5])cube([23,3.3,3],center=true);
+    }
+  } else {
+    import("pro-micro.stl");
+  }
 }
 
 
@@ -159,16 +185,19 @@ module plate(){
     repeate(11.5,11.5,5.5,5.5)cherrySwitch();
   }
   if(caps){
-    repeate(1.5,9.5,1.5,4.5)cherryCap();
+//    repeate(1.5,9.5,1.5,4.5)cherryCap();
+    for(row=[1:4]){
+      repeate(1.5,9.5,row+0.5,row+0.5)saCap(row=row);
+    }
     
-//    repeate(1.5,11.5,1.5,4.5)cherryCap();
+    repeate(1.5,11.5,1.5,4.5)cherryCap();
     
     repeate(1.5,1.5,5.5,5.5)cherryCap();
     repeate(5,5,5.5,5.5)cherryCap(capSize=2);
     repeate(6.5,6.5,5.5,5.5)cherryCap();
     repeate(8,8,5.5,5.5)cherryCap(capSize=2);
     
-//    repeate(11.5,11.5,5.5,5.5)cherryCap();
+    repeate(11.5,11.5,5.5,5.5)cherryCap();
   }
 }
 
@@ -203,17 +232,17 @@ module top(){
             
           }
           translate([0,0,-keyZ]){
-            repeate(3.1, 3.1, 6.1, 6.1)cube([space,space,topZ]);
-            repeate(3.1, 3.1, 6.9, 6.9)cube([space,space,topZ]);
+            repeate(3.035, 3.1, 6.035, 6.1)cube([space,space,topZ]);
+            repeate(3.035, 3.1, 6.9, 6.9)cube([space,space,topZ]);
             
-            repeate(3.95, 4.1, 6.1, 6.1)cube([space,space,topZ]);
+            repeate(3.95, 4.1, 6.035, 6.1)cube([space,space,topZ]);
             repeate(3.95, 4.1, 6.9, 6.9)cube([space,space,topZ]);
             
-            repeate(10.05, 10.05, 6.1, 6.1)cube([space,space,topZ]);
+            repeate(10.05, 10.05, 6.035, 6.1)cube([space,space,topZ]);
             repeate(10.05, 10.05, 6.9, 6.9)cube([space,space,topZ]);
             
-            repeate(10.9, 10.9, 6.1, 6.1)cube([space,space,topZ]);
-            repeate(10.9, 10.9, 6.9, 6.9)cube([space,space,topZ]);
+            repeate(10.965, 11.3, 6.035, 6.1)cube([space,space,topZ]);
+            repeate(10.965, 11.3, 6.9, 6.9)cube([space,space,topZ]);
           }
         }
         translate([edgeSpace/2,edgeSpace/2,-1])cube([moduleX, moduleY, moduleZ*3.7]);
@@ -237,18 +266,46 @@ module bottom(){
      translate([0,0,4])cylinder(d=mSize,h=20);
     }
   }
+  module cordParth(l=50){
+    rotate([0,-90,0]){
+      cylinder(d=4,h=l,center=true);
+      translate([-2,0,0])cube([4,4,l],center=true);
+    }
+  }
   
-  difference(){
+  color([1,0,1])difference(){
     cube([moduleX,moduleY, moduleZ*10]);
     translate([-10,-10,moduleZ*8])rotate([0,tilt,0])cube([moduleX*1.3,moduleY*1.3, moduleZ*11]);
     translate([edgeSpace/2,edgeSpace/2,5])cube([moduleX-edgeSpace,moduleY-edgeSpace, moduleZ*6]);
     
     screwPoints()screwHole();
+    
+//    translate([30,30,0])cube([10,10,10]);
+    translate(proMicroPosition){
+      proMicro(true);
+      translate([-25,0,0])cube([17,10,10],center=true);
+      translate([-45,0,-2])cordParth();
+      translate([-45,0,-2])rotate([0,0,90])cordParth(moduleY*0.805);
+      translate([-70,90,-2])cordParth();
+      translate([-70,-90,-2])cordParth();
+    }
   }
+  translate(proMicroPosition){
+    translate([-55,2,-3])cube([6,2,1],center=true);
+    translate([-55,92,-3])cube([6,2,1],center=true);
+    translate([-55,-92,-3])cube([6,2,1],center=true);
+    
+    translate([-43,70,-3])cube([2,6,1],center=true);
+    translate([-43,30,-3])cube([2,6,1],center=true);
+    
+    translate([-43,-70,-3])cube([2,6,1],center=true);
+    translate([-43,-30,-3])cube([2,6,1],center=true);
+  }
+  color([1,1,0])translate(proMicroPosition)proMicro();
 }
 
 module keyboard(){
-  translate([10,10,0]){
+  translate([10,10,25]){
 //    rotate([0,0,0]){
     rotate([0,tilt,0]){
       if(showPlate){
@@ -259,11 +316,15 @@ module keyboard(){
       }
     }
     if(showBottom){
-      translate([0,0,-partSpaceing])color([1,0,1])translate([0,0,-23])bottom();
+      translate([0,0,-partSpaceing])translate([0,0,-23])bottom();
     }
   }
 }
 
+//translate(proMicroPosition){
+//  proMicro();
+////  proMicro(true);
+//}
 
 keyboard();
-//#cube([140,140,140]);
+if(showPrintBox){#cube(printerSize);}
