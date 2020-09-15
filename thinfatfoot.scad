@@ -148,6 +148,18 @@ module keyHoles (yStart, yEnd, xStart, xEnd){
    repeate(yStart,yEnd, xStart, xEnd) mxSwitchCut();
 }
 
+module keyHoleWithStabs(yStart, yEnd, xStart, xEnd){
+  module stabHole(){
+    cube([cherryCutOutSize,3,10],center=true);
+  }
+  centerSwitch=[cherryCutOutSize/1.5,cherryCutOutSize/1.5,0];
+  repeate(yStart,yEnd, xStart, xEnd) {
+    translate(centerSwitch)translate([0,-(cherryCutOutSize/1.5-0.495+3),0])stabHole();
+    mxSwitchCut();
+    translate(centerSwitch)translate([0,cherryCutOutSize/1.5-0.17+3,0])stabHole();
+  }
+}
+
 module screwPoints(antiTilt=false){
   rotation = antiTilt ? [0,-tilt,0] : [0,0,0];
   translate([6,6,0])rotate(rotation)children();
@@ -163,9 +175,10 @@ module plate(){
     keyHoles(1.5,11.5,1.5,4.5);
     
     keyHoles(1.5,1.5,5.5,5.5);
-    keyHoles(5,5,5.5,5.5);
+    keyHoleWithStabs(5,5,5.5,5.5);
+
     keyHoles(6.5,6.5,5.5,5.5);
-    keyHoles(8,8,5.5,5.5);
+    keyHoleWithStabs(8,8,5.5,5.5);
     
     keyHoles(11.5,11.5,5.5,5.5);
     
