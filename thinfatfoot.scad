@@ -25,6 +25,9 @@ showPlate=true;
 showBottom=true;
 partSpaceing=0;
 
+halfSpaceingX=0;
+halfSpaceingY=0;
+
 proMicroPosition=position(5,7,3.5);
 
 $fn=50;
@@ -212,7 +215,7 @@ module plate(){
         }
       }
       if(plus){
-          translate([moduleX/2+space/2,moduleY/2-(space/2+2),-1])
+        translate([moduleX/2+space/2,moduleY/2-(space/2+2),-1])
         cube([moduleX/2-space/2+1,2+1,moduleZ/2+1]);
       } else {
         translate([moduleX/2-space/2,moduleY/2-(space/2+2),-1])
@@ -242,6 +245,7 @@ module plate(){
     color([0.4,0.7,0.9])leftPlate();
 //    translate([space, space, 0])
 //    translate([3,0.5,0])
+    translate([halfSpaceingX,halfSpaceingY,0])
     color([0.9,0.7,0.4])rightPlate();
   
   }
@@ -340,11 +344,20 @@ module bottom(){
     }
   }
   module cordParth(l=50){
-      rotate([0,-90,0]){
-        cylinder(d=4,h=l,center=true);
-        translate([-2,0,0])cube([4,4,l],center=true);
-      }
+    rotate([0,-90,0]){
+      cylinder(d=4,h=l,center=true);
+      translate([-2,0,0])cube([4,4,l],center=true);
     }
+  }
+  module pmCutOut(){
+    proMicro(true);
+    translate([-30,0,0])cube([25,12,10],center=true);
+    translate([-55,0,-2])cordParth();
+    translate([-55,0,-2])rotate([0,0,90])cordParth(moduleY*0.805);
+    translate([-80,90,-2])cordParth();
+    translate([-80,-90,-2])cordParth();
+  }
+    
   module fullBottom(){
     difference(){
       cube([moduleX,moduleY, moduleZ*10]);
@@ -355,54 +368,85 @@ module bottom(){
       
   //    translate([30,30,0])cube([10,10,10]);
       translate(proMicroPosition){
-        proMicro(true);
-        translate([-30,0,0])cube([25,12,10],center=true);
-        translate([-55,0,-2])cordParth();
-        translate([-55,0,-2])rotate([0,0,90])cordParth(moduleY*0.805);
-        translate([-80,90,-2])cordParth();
-        translate([-80,-90,-2])cordParth();
+        pmCutOut();
       }
+    }
+    translate(proMicroPosition){
+      translate([-33,0,6])cube([24,12,2],center=true);
+      translate([-33.25,-7.5,3])cube([24.5,3,8],center=true);
+      translate([-33.25,7.5,3])cube([24.5,3,8],center=true);
+      translate([-44,0,4])cube([3,12,6],center=true);
+    }
+    translate(proMicroPosition){
+      translate([-65,2,-3])cube([6,2,1],center=true);
+      translate([-65,92,-3])cube([6,2,1],center=true);
+      translate([-65,-92,-3])cube([6,2,1],center=true);
+      
+      translate([-53,70,-3])cube([2,6,1],center=true);
+      translate([-53,30,-3])cube([2,6,1],center=true);
+      
+      translate([-53,-70,-3])cube([2,6,1],center=true);
+      translate([-53,-30,-3])cube([2,6,1],center=true);
     }
   }
   module halfBottom(plus=true){
-    cube([moduleX,moduleY/2-space/3.2, moduleZ*10]);
-    if(plus){
-      translate([moduleX/2,0,0])cube([moduleX/2,moduleY/2+space/2, moduleZ*10]);
-    } else {
-      translate([moduleX/2,0,0])cube([moduleX/2,moduleY/2+space/2, moduleZ*10]);
+    lip=9;
+    mov=0.052;
+    difference(){
+      union(){
+        cube([moduleX,moduleY/2-space/3.2, moduleZ*10]);
+        if(plus){
+          
+          translate([moduleX/2,0,0])cube([moduleX/2,moduleY/2+space/3.2, moduleZ*10]);
+          translate([moduleX/(2-mov+0.0025),0,0])cube([moduleX/(2+mov),moduleY/2+space/3.2+lip, 2]);
+        } else {
+          translate([moduleX/2,0,0])cube([moduleX/2,moduleY/2+space/3.2, moduleZ*10]);
+          translate([moduleX/1.42,0,0])cube([moduleX/3.38099,moduleY/2+space/3.2+lip, 2]);
+        }
+      }
+      if(plus){
+        translate([-1,moduleY/2-space/3.2-lip,-1])cube([moduleX/3.38099+1,moduleY/2+space/3.2+lip, 3]);
+      } else {
+        translate([-1,moduleY/2-space/3.2-lip,-1])cube([moduleX/(2+mov)+1,moduleY/2+space/3.2+lip, 3]);
+      }
     }
   }
   module leftBottom(){
-    halfBottom(true);
+    difference(){
+      halfBottom(true);
+      screwPoints()screwHole();
+      
+      translate([-10,-10,moduleZ*8])rotate([0,tilt,0])cube([moduleX*1.3,moduleY*1.3, moduleZ*11]);
+      translate([edgeSpace/2,edgeSpace/2,5])cube([moduleX-edgeSpace,moduleY-edgeSpace, moduleZ*6]);
+      
+      translate(proMicroPosition){
+        pmCutOut();
+      }
+    }
   }
   module rightBottom(){
-    translate([moduleX,moduleY,0])rotate([0,0,180])halfBottom(false);
+    difference(){
+      translate([moduleX,moduleY,0])rotate([0,0,180])halfBottom(false);
+      screwPoints()screwHole();
+      
+      translate([-10,-10,moduleZ*8])rotate([0,tilt,0])cube([moduleX*1.3,moduleY*1.3, moduleZ*11]);
+      translate([edgeSpace/2,edgeSpace/2,5])cube([moduleX-edgeSpace,moduleY-edgeSpace, moduleZ*6]);
+      
+      translate(proMicroPosition){
+        pmCutOut();
+      }
+    }
   }
   
   
-  color([1,0,1])fullBottom();
+//  color([1,0,1])fullBottom();
   color([0,1,1])leftBottom();
+  translate([halfSpaceingX,halfSpaceingY,0])
   color([1,1,0])rightBottom();
   
   
-  translate(proMicroPosition){
-    translate([-33,0,6])cube([24,12,2],center=true);
-    translate([-33.25,-7.5,3])cube([24.5,3,8],center=true);
-    translate([-33.25,7.5,3])cube([24.5,3,8],center=true);
-    translate([-44,0,4])cube([3,12,6],center=true);
-  }
-  translate(proMicroPosition){
-    translate([-65,2,-3])cube([6,2,1],center=true);
-    translate([-65,92,-3])cube([6,2,1],center=true);
-    translate([-65,-92,-3])cube([6,2,1],center=true);
-    
-    translate([-53,70,-3])cube([2,6,1],center=true);
-    translate([-53,30,-3])cube([2,6,1],center=true);
-    
-    translate([-53,-70,-3])cube([2,6,1],center=true);
-    translate([-53,-30,-3])cube([2,6,1],center=true);
-  }
-  color([1,1,0])translate(proMicroPosition)proMicro();
+  
+//  color([1,1,0])translate(proMicroPosition)proMicro();
 }
 
 module keyboard(){
