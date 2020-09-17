@@ -297,41 +297,112 @@ module top(){
     }
   }
   
-  difference(){
-    union(){
-      difference(){
-        union(){
-          difference(){
-            cube([moduleX+edgeSpace*1.3, moduleY+edgeSpace, topZ]);
-            translate([edgeSpace*1-1,edgeSpace-1,-1])cube([moduleX-edgeSpace+2, moduleY-edgeSpace+2, topZ+2]);
-            
+  module fullTop(){
+    difference(){
+      union(){
+        difference(){
+          union(){
+            difference(){
+              cube([moduleX+edgeSpace*1.3, moduleY+edgeSpace, topZ]);
+              translate([edgeSpace*1-1,edgeSpace-1,-1])cube([moduleX-edgeSpace+2, moduleY-edgeSpace+2, topZ+2]);
+              
+            }
+            translate([0,0,-keyZ]){
+              repeate(3.035, 3.1, 6.035, 6.1)cube([space,space,topZ]);
+              repeate(3.035, 3.1, 6.9, 6.9)cube([space,space,topZ]);
+              
+              repeate(3.95, 4.1, 6.035, 6.1)cube([space,space,topZ]);
+              repeate(3.95, 4.1, 6.9, 6.9)cube([space,space,topZ]);
+              
+              repeate(10.05, 10.05, 6.035, 6.1)cube([space,space,topZ]);
+              repeate(10.05, 10.05, 6.9, 6.9)cube([space,space,topZ]);
+              
+              repeate(10.965, 11.3, 6.035, 6.1)cube([space,space,topZ]);
+              repeate(10.965, 11.3, 6.9, 6.9)cube([space,space,topZ]);
+            }
           }
-          translate([0,0,-keyZ]){
+          translate([edgeSpace/2,edgeSpace/2,-1])cube([moduleX, moduleY, moduleZ*3.7]);
+          
+          translate([moduleX+edgeSpace*0.7,0,0])roundier();
+          translate([edgeSpace*0.55,0,20])rotate([0,180,0])roundier();
+        }
+      }
+    
+      translate([0,7.45,29])rotate([180,0,0])rounder();  
+      translate([0,moduleY+edgeSpace*2-10,12.55])rotate([90,0,0])rounder();
+      
+      translate([edgeSpace/2, edgeSpace/2,9])screwPoints(true)cylinder(d=mSize,h=moduleZ*2);
+    }
+  }
+  
+  module halfTop(plus=true){
+    difference(){
+      union(){
+        difference(){
+          union(){
+            cube([moduleX+edgeSpace*1.3, (moduleY+edgeSpace)/2-edgeSpace*0.7, topZ]);
+            translate([moduleX,0,0])cube([30, (moduleY+edgeSpace)/2+edgeSpace*0.7, topZ]);
+          }
+          
+          if(plus){
+            translate([edgeSpace*1-1,edgeSpace-1,-1])cube([moduleX-edgeSpace+2, moduleY-edgeSpace+2, topZ+2]);
+          } else {
+            translate([edgeSpace*1.576-1,edgeSpace-1,-1])cube([moduleX-edgeSpace+2, moduleY-edgeSpace+2, topZ+2]);
+          }
+        }
+        translate([0,0,-keyZ]){
+          if(plus){
             repeate(3.035, 3.1, 6.035, 6.1)cube([space,space,topZ]);
             repeate(3.035, 3.1, 6.9, 6.9)cube([space,space,topZ]);
             
             repeate(3.95, 4.1, 6.035, 6.1)cube([space,space,topZ]);
             repeate(3.95, 4.1, 6.9, 6.9)cube([space,space,topZ]);
             
-            repeate(10.05, 10.05, 6.035, 6.1)cube([space,space,topZ]);
-            repeate(10.05, 10.05, 6.9, 6.9)cube([space,space,topZ]);
+            #translate([0, (moduleY+edgeSpace)/2-edgeSpace*0.7,3])cube([20,20,10]);
+          } else {
+            row=1.64;
+            repeate(3.035, 3.1, row+0.035, row+0.1)cube([space,space,topZ]);
+            repeate(3.035, 3.1, row+0.9, row+0.9)cube([space,space,topZ]);
             
-            repeate(10.965, 11.3, 6.035, 6.1)cube([space,space,topZ]);
-            repeate(10.965, 11.3, 6.9, 6.9)cube([space,space,topZ]);
+            repeate(3.95, 4.1, row+0.035, row+0.1)cube([space,space,topZ]);
+            repeate(3.95, 4.1, row+0.9, row+0.9)cube([space,space,topZ]);
           }
         }
+      }
+      translate([0,7.45,29])rotate([180,0,0])rounder();
+      if(plus){
         translate([edgeSpace/2,edgeSpace/2,-1])cube([moduleX, moduleY, moduleZ*3.7]);
-        
         translate([moduleX+edgeSpace*0.7,0,0])roundier();
         translate([edgeSpace*0.55,0,20])rotate([0,180,0])roundier();
+        
+        translate([edgeSpace/2, edgeSpace/2,9])screwPoints(true)cylinder(d=mSize,h=moduleZ*2);
+      } else {
+        translate([edgeSpace+1.42,edgeSpace/2,-1])cube([moduleX, moduleY, moduleZ*3.7]);
+        translate([moduleX+edgeSpace*1.025,0,0])roundier();
+        translate([edgeSpace*0.875,0,20])rotate([0,180,0])roundier();
+        
+        translate([moduleX+edgeSpace*1.07,moduleY+edgeSpace/2,9])rotate([0,0,180])screwPoints(true)cylinder(d=mSize,h=moduleZ*2);
       }
+      
     }
-  
-    translate([0,7.45,29])rotate([180,0,0])rounder();  
-    translate([0,moduleY+edgeSpace*2-10,12.55])rotate([90,0,0])rounder();
-    
-    translate([edgeSpace/2, edgeSpace/2,9])screwPoints(true)cylinder(d=mSize,h=moduleZ*3);
   }
+  
+  
+  module leftTop(){
+    halfTop(true);
+  }
+  module rightTop(){
+    translate([moduleX+(edgeSpace*1.6),moduleY+edgeSpace,0])rotate([0,0,180])halfTop(false);
+  }
+  
+  translate([-moduleY,0,0])
+  color([0.5,0.6,0.7]) fullTop();
+  
+  color([0.7,0.6,0.5]) leftTop();
+  
+  translate([halfSpaceingX-0.465,halfSpaceingY,0])
+  color([0.7,0.5,0.6]) rightTop();
+  
 }
 
 
@@ -446,7 +517,7 @@ module bottom(){
   
   
   
-//  color([1,1,0])translate(proMicroPosition)proMicro();
+  color([1,1,0])translate(proMicroPosition)proMicro();
 }
 
 module keyboard(){
@@ -457,7 +528,7 @@ module keyboard(){
         plate();
       }
       if(showTop){
-        translate([0,0,partSpaceing])translate([-edgeSpace/2,-edgeSpace/2,-(topZ/3)])color([0.5,0.6,0.7])top();
+        translate([0,0,partSpaceing])translate([-edgeSpace/2,-edgeSpace/2,-(topZ/3)])top();
       }
     }
     if(showBottom){
