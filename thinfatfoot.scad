@@ -358,7 +358,10 @@ module top(){
             repeate(3.95, 4.1, 6.035, 6.1)cube([space,space,topZ]);
             repeate(3.95, 4.1, 6.9, 6.9)cube([space,space,topZ]);
             
-            #translate([0, (moduleY+edgeSpace)/2-edgeSpace*0.7,3])cube([20,20,10]);
+            translate([0, (moduleY+edgeSpace)/2-edgeSpace*0.7,3]){
+              cube([20,20,10.09]);
+              translate([5.52,0,10])cube([4,20,3]);
+            }
           } else {
             row=1.64;
             repeate(3.035, 3.1, row+0.035, row+0.1)cube([space,space,topZ]);
@@ -366,6 +369,11 @@ module top(){
             
             repeate(3.95, 4.1, row+0.035, row+0.1)cube([space,space,topZ]);
             repeate(3.95, 4.1, row+0.9, row+0.9)cube([space,space,topZ]);
+            
+            translate([1, (moduleY+edgeSpace)/2-edgeSpace*0.7,3]){
+              cube([20,20,10.09]);
+              translate([10,0,10])cube([4,20,3]);
+            }
           }
         }
       }
@@ -376,12 +384,22 @@ module top(){
         translate([edgeSpace*0.55,0,20])rotate([0,180,0])roundier();
         
         translate([edgeSpace/2, edgeSpace/2,9])screwPoints(true)cylinder(d=mSize,h=moduleZ*2);
+        
+        translate([moduleX+7, ((moduleY+edgeSpace)/2-edgeSpace*0.7)+6.6,-1]){
+          cube([21,21,11.1]);
+          translate([7.5,0,11])cube([5,21,3.5]);
+        }
       } else {
         translate([edgeSpace+1.42,edgeSpace/2,-1])cube([moduleX, moduleY, moduleZ*3.7]);
         translate([moduleX+edgeSpace*1.025,0,0])roundier();
         translate([edgeSpace*0.875,0,20])rotate([0,180,0])roundier();
         
         translate([moduleX+edgeSpace*1.07,moduleY+edgeSpace/2,9])rotate([0,0,180])screwPoints(true)cylinder(d=mSize,h=moduleZ*2);
+        
+        translate([moduleX+edgeSpace, ((moduleY+edgeSpace)/2-edgeSpace*0.7)+6.6,-1]){
+          cube([21,21,11.1]);
+          translate([1,0,10.5])cube([5,20.3,4]);
+        }
       }
       
     }
@@ -395,8 +413,8 @@ module top(){
     translate([moduleX+(edgeSpace*1.6),moduleY+edgeSpace,0])rotate([0,0,180])halfTop(false);
   }
   
-  translate([-moduleY,0,0])
-  color([0.5,0.6,0.7]) fullTop();
+//  translate([-moduleY,0,0])
+//  color([0.5,0.6,0.7]) fullTop();
   
   color([0.7,0.6,0.5]) leftTop();
   
@@ -543,4 +561,7 @@ module keyboard(){
 //}
 
 keyboard();
-if(showPrintBox){#cube(printerSize);}
+if(showPrintBox){
+//  translate([0,space/2,0])
+  #cube(printerSize);
+}
